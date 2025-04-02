@@ -1,15 +1,14 @@
-
 import React, { useState } from 'react';
 import { BarChart3, Users, Brain, Upload, Phone, Code2, Database, Shield, Cpu, LineChart, Zap } from 'lucide-react';
 
 interface PredictionInput {
-  account_length: number;
+  account_length: number | string;
   international_plan: string;
   voice_mail_plan: string;
-  total_day_minutes: number;
-  total_eve_minutes: number;
-  total_night_minutes: number;
-  total_intl_minutes: number;
+  total_day_minutes: number | string;
+  total_eve_minutes: number | string;
+  total_night_minutes: number | string;
+  total_intl_minutes: number | string;
 }
 
 function App() {
@@ -21,13 +20,13 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
 
   const [predictInput, setPredictInput] = useState<PredictionInput>({
-    account_length: 0,
+    account_length: '',
     international_plan: 'No',
     voice_mail_plan: 'No',
-    total_day_minutes: 0,
-    total_eve_minutes: 0,
-    total_night_minutes: 0,
-    total_intl_minutes: 0,
+    total_day_minutes: '',
+    total_eve_minutes: '',
+    total_night_minutes: '',
+    total_intl_minutes: '',
   });
 
   const handlePredictSubmit = async (e: React.FormEvent) => {
@@ -54,7 +53,7 @@ function App() {
     }
   };
 
-  const handleRetrainSubmit = async (e: React.FormEvent) => {
+  const handleRetrainSubmit = async (e: RetrainPopup) => {
     e.preventDefault();
     if (!selectedFile) return;
 
@@ -78,7 +77,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* ... Previous header content remains the same until buttons ... */}
       <header className="bg-gradient-to-r from-[#0066CC] to-[#00A2FF] text-white">
         <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
@@ -124,87 +122,108 @@ function App() {
       {/* Prediction Popup */}
       {showPredictPopup && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <h2 className="text-2xl font-bold mb-4">Predict Churn</h2>
-            <form onSubmit={handlePredictSubmit} className="space-y-4">
-              <input
-                type="number"
-                placeholder="Account Length"
-                value={predictInput.account_length}
-                onChange={(e) => setPredictInput({ ...predictInput, account_length: Number(e.target.value) })}
-                className="w-full p-2 border rounded"
-                required
-              />
-              <select
-                value={predictInput.international_plan}
-                onChange={(e) => setPredictInput({ ...predictInput, international_plan: e.target.value })}
-                className="w-full p-2 border rounded"
-              >
-                <option value="No">No International Plan</option>
-                <option value="Yes">Yes International Plan</option>
-              </select>
-              <select
-                value={predictInput.voice_mail_plan}
-                onChange={(e) => setPredictInput({ ...predictInput, voice_mail_plan: e.target.value })}
-                className="w-full p-2 border rounded"
-              >
-                <option value="No">No Voice Mail</option>
-                <option value="Yes">Yes Voice Mail</option>
-              </select>
-              <input
-                type="number"
-                placeholder="Total Day Minutes"
-                value={predictInput.total_day_minutes}
-                onChange={(e) => setPredictInput({ ...predictInput, total_day_minutes: Number(e.target.value) })}
-                className="w-full p-2 border rounded"
-                required
-              />
-              <input
-                type="number"
-                placeholder="Total Evening Minutes"
-                value={predictInput.total_eve_minutes}
-                onChange={(e) => setPredictInput({ ...predictInput, total_eve_minutes: Number(e.target.value) })}
-                className="w-full p-2 border rounded"
-                required
-              />
-              <input
-                type="number"
-                placeholder="Total Night Minutes"
-                value={predictInput.total_night_minutes}
-                onChange={(e) => setPredictInput({ ...predictInput, total_night_minutes: Number(e.target.value) })}
-                className="w-full p-2 border rounded"
-                required
-              />
-              <input
-                type="number"
-                placeholder="Total International Minutes"
-                value={predictInput.total_intl_minutes}
-                onChange={(e) => setPredictInput({ ...predictInput, total_intl_minutes: Number(e.target.value) })}
-                className="w-full p-2 border rounded"
-                required
-              />
-              <div className="flex justify-end space-x-2">
+          <div className="bg-white p-2 rounded-lg w-full max-w-xs">
+            <h2 className="text-base font-bold mb-1">Predict Churn</h2>
+            <form onSubmit={handlePredictSubmit} className="space-y-0.5">
+              <div>
+                <label className="block text-[10px] font-medium text-gray-700 mb-0.5">Account Length</label>
+                <input
+                  type="number"
+                  placeholder="128"
+                  value={predictInput.account_length || ''}
+                  onChange={(e) => setPredictInput({ ...predictInput, account_length: Number(e.target.value) })}
+                  className="w-full p-1 border rounded text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-medium text-gray-700 mb-0.5">International Plan</label>
+                <select
+                  value={predictInput.international_plan}
+                  onChange={(e) => setPredictInput({ ...predictInput, international_plan: e.target.value })}
+                  className="w-full p-1 border rounded text-xs"
+                >
+                  <option value="No">No International Plan</option>
+                  <option value="Yes">Yes International Plan</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] font-medium text-gray-700 mb-0.5">Voice Mail Plan</label>
+                <select
+                  value={predictInput.voice_mail_plan}
+                  onChange={(e) => setPredictInput({ ...predictInput, voice_mail_plan: e.target.value })}
+                  className="w-full p-1 border rounded text-xs"
+                >
+                  <option value="No">No Voice Mail</option>
+                  <option value="Yes">Yes Voice Mail</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] font-medium text-gray-700 mb-0.5">Total Day Minutes</label>
+                <input
+                  type="number"
+                  placeholder="265.1"
+                  value={predictInput.total_day_minutes || ''}
+                  onChange={(e) => setPredictInput({ ...predictInput, total_day_minutes: Number(e.target.value) })}
+                  className="w-full p-1 border rounded text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-medium text-gray-700 mb-0.5">Total Evening Minutes</label>
+                <input
+                  type="number"
+                  placeholder="197.4"
+                  value={predictInput.total_eve_minutes || ''}
+                  onChange={(e) => setPredictInput({ ...predictInput, total_eve_minutes: Number(e.target.value) })}
+                  className="w-full p-1 border rounded text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-medium text-gray-700 mb-0.5">Total Night Minutes</label>
+                <input
+                  type="number"
+                  placeholder="244.7"
+                  value={predictInput.total_night_minutes || ''}
+                  onChange={(e) => setPredictInput({ ...predictInput, total_night_minutes: Number(e.target.value) })}
+                  className="w-full p-1 border rounded text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-medium text-gray-700 mb-0.5">Total International Minutes</label>
+                <input
+                  type="number"
+                  placeholder="10.0"
+                  value={predictInput.total_intl_minutes || ''}
+                  onChange={(e) => setPredictInput({ ...predictInput, total_intl_minutes: Number(e.target.value) })}
+                  className="w-full p-1 border rounded text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  required
+                />
+              </div>
+              <div className="flex justify-end space-x-1 mt-1">
                 <button
                   type="button"
                   onClick={() => setShowPredictPopup(false)}
-                  className="px-4 py-2 bg-gray-200 rounded"
+                  className="px-2 py-0.5 bg-gray-200 rounded text-[10px]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="px-4 py-2 bg-[#0066CC] text-white rounded disabled:opacity-50"
+                  className="px-2 py-0.5 bg-[#0066CC] text-white rounded text-[10px] disabled:opacity-50"
                 >
                   {isLoading ? 'Predicting...' : 'Predict'}
                 </button>
               </div>
             </form>
             {predictionResult && (
-              <div className="mt-4 p-4 bg-gray-100 rounded">
-                <p>Churn Probability: {(predictionResult.churn_probability * 100).toFixed(2)}%</p>
-                <p>Prediction: {predictionResult.churn_prediction ? 'Will Churn' : 'Won\'t Churn'}</p>
-                {predictionResult.error && <p className="text-red-500">{predictionResult.error}</p>}
+              <div className="mt-1 p-1 bg-gray-100 rounded">
+                <p className="text-[10px]">Churn Probability: {(predictionResult.churn_probability * 100).toFixed(2)}%</p>
+                <p className="text-[10px]">Prediction: {predictionResult.churn_prediction ? 'Will Churn' : 'Won\'t Churn'}</p>
+                {predictionResult.error && <p className="text-red-500 text-[10px]">{predictionResult.error}</p>}
               </div>
             )}
           </div>
@@ -214,44 +233,44 @@ function App() {
       {/* Retrain Popup */}
       {showRetrainPopup && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-2xl">
-            <h2 className="text-2xl font-bold mb-4">Retrain Model</h2>
-            <form onSubmit={handleRetrainSubmit} className="space-y-4">
+          <div className="bg-white p-2 rounded-lg w-full max-w-md">
+            <h2 className="text-base font-bold mb-1">Retrain Model</h2>
+            <form onSubmit={handleRetrainSubmit} className="space-y-0.5">
               <input
                 type="file"
                 accept=".csv"
                 onChange={handleFileChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-1 border rounded text-xs"
                 required
               />
-              <div className="flex justify-end space-x-2">
+              <div className="flex justify-end space-x-1 mt-1">
                 <button
                   type="button"
                   onClick={() => setShowRetrainPopup(false)}
-                  className="px-4 py-2 bg-gray-200 rounded"
+                  className="px-2 py-0.5 bg-gray-200 rounded text-[10px]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isLoading || !selectedFile}
-                  className="px-4 py-2 bg-[#0066CC] text-white rounded disabled:opacity-50"
+                  className="px-2 py-0.5 bg-[#0066CC] text-white rounded text-[10px] disabled:opacity-50"
                 >
                   {isLoading ? 'Retraining...' : 'Retrain'}
                 </button>
               </div>
             </form>
             {retrainResult && (
-              <div className="mt-4 space-y-4">
+              <div className="mt-1 space-y-0.5">
                 {retrainResult.error ? (
-                  <p className="text-red-500">{retrainResult.error}</p>
+                  <p className="text-red-500 text-[10px]">{retrainResult.error}</p>
                 ) : (
                   <>
-                    <div className="p-4 bg-gray-100 rounded">
-                      <p>Accuracy: {(retrainResult.metrics.accuracy * 100).toFixed(2)}%</p>
-                      <p>Precision: {(retrainResult.metrics.precision * 100).toFixed(2)}%</p>
-                      <p>Recall: {(retrainResult.metrics.recall * 100).toFixed(2)}%</p>
-                      <p>F1 Score: {(retrainResult.metrics.f1_score * 100).toFixed(2)}%</p>
+                    <div className="p-1 bg-gray-100 rounded">
+                      <p className="text-[10px]">Accuracy: {(retrainResult.metrics.accuracy * 100).toFixed(2)}%</p>
+                      <p className="text-[10px]">Precision: {(retrainResult.metrics.precision * 100).toFixed(2)}%</p>
+                      <p className="text-[10px]">Recall: {(retrainResult.metrics.recall * 100).toFixed(2)}%</p>
+                      <p className="text-[10px]">F1 Score: {(retrainResult.metrics.f1_score * 100).toFixed(2)}%</p>
                     </div>
                     {retrainResult.plot && (
                       <img
@@ -268,43 +287,78 @@ function App() {
         </div>
       )}
 
-      {/* ... Rest of the sections remain the same ... */}
-      <section className="py-20 bg-gray-50">
+      {/* Problem Section */}
+      <section id="problem" className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-12">
-            <div className="flex flex-col items-center text-center">
-              <div className="bg-[#0066CC] p-4 rounded-full text-white mb-6">
-                <Brain className="h-8 w-8" />
-              </div>
-              <h3 className="text-xl font-semibold mb-4">Advanced ML Model</h3>
+          <h2 className="text-3xl font-bold text-center mb-8">The Churn Challenge</h2>
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-gray-600 mb-6">
+              Telecom companies face significant revenue loss due to customer churn. 
+              Traditional methods of identifying at-risk customers are often too late or inaccurate, 
+              leading to missed opportunities for retention.
+            </p>
+            <p className="text-gray-600">
+              High churn rates can cost millions annually, making it critical to predict and 
+              prevent customer departure proactively.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Solution Section */}
+      <section id="solution" className="py-20 bg-white">
+        <div className="container mx-auto px-6">
+          <h2 className="text-3xl font-bold text-center mb-8">Our AI-Powered Solution</h2>
+          <div className="grid md:grid-cols-2 gap-12">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Predictive Analytics</h3>
               <p className="text-gray-600">
-                Utilizing state-of-the-art machine learning algorithms to predict customer behavior.
+                Our machine learning model analyzes customer data to predict churn probability 
+                with high accuracy, allowing you to take action before customers leave.
               </p>
             </div>
-            <div className="flex flex-col items-center text-center">
-              <div className="bg-[#0066CC] p-4 rounded-full text-white mb-6">
-                <BarChart3 className="h-8 w-8" />
-              </div>
-              <h3 className="text-xl font-semibold mb-4">Real-time Analytics</h3>
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Actionable Insights</h3>
               <p className="text-gray-600">
-                Get instant insights and predictions based on your customer data.
-              </p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <div className="bg-[#0066CC] p-4 rounded-full text-white mb-6">
-                <Users className="h-8 w-8" />
-              </div>
-              <h3 className="text-xl font-semibold mb-4">Customer Retention</h3>
-              <p className="text-gray-600">
-                Take proactive measures to retain valuable customers before they churn.
+                Get detailed reports and recommendations to improve customer retention 
+                strategies based on real-time data analysis.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-white">
+      {/* Demo Section */}
+      <section id="demo" className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
+          <h2 className="text-3xl font-bold text-center mb-8">See It In Action</h2>
+          <div className="max-w-4xl mx-auto">
+            <p className="text-center text-gray-600 mb-6">
+              Try our live demo to experience how TelePredict can transform your customer 
+              retention strategy. Upload your data or use our sample dataset to see instant results.
+            </p>
+            <div className="flex justify-center space-x-4">
+              <button 
+                onClick={() => setShowPredictPopup(true)}
+                className="bg-[#0066CC] text-white px-6 py-2 rounded-lg hover:bg-[#0055AA]"
+              >
+                Try Prediction
+              </button>
+              <button 
+                onClick={() => setShowRetrainPopup(true)}
+                className="border-2 border-[#0066CC] text-[#0066CC] px-6 py-2 rounded-lg hover:bg-blue-50"
+              >
+                Retrain Model
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Insights Section */}
+      <section id="insights" className="py-20 bg-white">
+        <div className="container mx-auto px-6">
+          <h2 className="text-3xl font-bold text-center mb-8">Key Insights</h2>
           <div className="grid md:grid-cols-3 gap-12">
             <div className="text-center">
               <div className="text-4xl font-bold text-[#0066CC] mb-2">95%</div>
@@ -322,64 +376,36 @@ function App() {
         </div>
       </section>
 
-      <section className="py-20 bg-gray-50">
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-16">Powered by Advanced Technology</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-              <div className="flex items-center mb-4">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <Brain className="h-6 w-6 text-[#0066CC]" />
-                </div>
-                <h3 className="text-xl font-semibold ml-4">TensorFlow</h3>
-              </div>
-              <p className="text-gray-600">Deep learning framework for building and training neural networks</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-              <div className="flex items-center mb-4">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <Code2 className="h-6 w-6 text-[#0066CC]" />
-                </div>
-                <h3 className="text-xl font-semibold ml-4">Python</h3>
-              </div>
-              <p className="text-gray-600">High-performance backend with FastAPI for real-time predictions</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-              <div className="flex items-center mb-4">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <Database className="h-6 w-6 text-[#0066CC]" />
-                </div>
-                <h3 className="text-xl font-semibold ml-4">PostgreSQL</h3>
-              </div>
-              <p className="text-gray-600">Scalable database for secure customer data management</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-              <div className="flex items-center mb-4">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <Shield className="h-6 w-6 text-[#0066CC]" />
-                </div>
-                <h3 className="text-xl font-semibold ml-4">Enterprise Security</h3>
-              </div>
-              <p className="text-gray-600">End-to-end encryption and compliance with data protection standards</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-              <div className="flex items-center mb-4">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <Cpu className="h-6 w-6 text-[#0066CC]" />
-                </div>
-                <h3 className="text-xl font-semibold ml-4">GPU Acceleration</h3>
-              </div>
-              <p className="text-gray-600">High-performance computing for rapid model training and inference</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-              <div className="flex items-center mb-4">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <LineChart className="h-6 w-6 text-[#0066CC]" />
-                </div>
-                <h3 className="text-xl font-semibold ml-4">Advanced Analytics</h3>
-              </div>
-              <p className="text-gray-600">Real-time visualization and reporting dashboard</p>
-            </div>
+          <h2 className="text-3xl font-bold text-center mb-8">Get In Touch</h2>
+          <div className="max-w-md mx-auto">
+            <form className="space-y-4">
+              <input
+                type="text"
+                placeholder="Your Name"
+                className="w-full p-2 border rounded"
+                required
+              />
+              <input
+                type="email"
+                placeholder="Your Email"
+                className="w-full p-2 border rounded"
+                required
+              />
+              <textarea
+                placeholder="Your Message"
+                className="w-full p-2 border rounded h-32"
+                required
+              />
+              <button
+                type="submit"
+                className="w-full bg-[#0066CC] text-white p-2 rounded hover:bg-[#0055AA]"
+              >
+                Send Message
+              </button>
+            </form>
           </div>
         </div>
       </section>
